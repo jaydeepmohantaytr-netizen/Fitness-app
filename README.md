@@ -53,16 +53,19 @@ Then open **http://localhost:5173**.
 backend/
   app/
     core/        config, database (SQLite WAL), security (JWT + bcrypt)
-    models/      user, habit (todos + exp log), planner (daily/weekly)
+    models/      user, habit (todos + exp log), planner, workout, nutrition
     schemas/     pydantic request/response models
-    services/    exp_engine.py  ← gamification logic
-    api/routes/  auth, habits, planner, admin
+    services/    exp_engine.py (gamification), workout_generator.py,
+                 nutrition_parser.py, ollama_client.py (local LLM)
+    api/routes/  auth, habits, planner, workout, nutrition, admin
     main.py
 frontend/
   src/
-    components/  ui primitives, layout (Sidebar), StatHeader, Toaster
-    features/habit/  TodoList, DailyPlanner, WeeklyPlanner
-    pages/       AuthPage, HabitTracker, ComingSoon (Workout/Nutrition), AdminPage
+    components/  ui primitives, layout (Sidebar, Topbar), Toaster
+    features/habit/    TodoList, DailyPlanner, WeeklyPlanner
+    features/workout/  WorkoutQuiz, PlanView
+    pages/       AuthPage, TodayPage, HabitTracker, WorkoutPage,
+                 NutritionPage, AdminPage
     store/       useAuthStore, useToast (Zustand)
     lib/         api.ts (axios), utils.ts (dates + cn)
 ```
