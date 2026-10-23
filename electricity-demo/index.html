@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dynamo — How a generator makes electricity</title>
+<style>
+  :root {
+    --bg: #0a0d14;
+    --panel: #121722;
+    --panel-2: #181f2e;
+    --line: #232c3f;
+    --text: #e8ecf4;
+    --muted: #8a94ab;
+    --amber: #ffb340;
+    --blue: #5aa9ff;
+    --green: #4ade80;
+    --red: #ff6b6b;
+    --violet: #a78bfa;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); }
+  body {
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: 28px 16px 64px;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  header h1 { margin: 0 0 6px; font-size: clamp(24px, 4vw, 34px); letter-spacing: -0.02em; }
+  header p { margin: 0; color: var(--muted); max-width: 70ch; }
+  header .eq { color: var(--amber); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; margin-top: 22px; }
+  @media (max-width: 920px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .card h2 {
+    margin: 0 0 12px; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  }
+  canvas { display: block; width: 100%; border-radius: 10px; touch-action: none; }
+  #machine { aspect-ratio: 640 / 480; background: #0d111a; cursor: grab; }
+  #machine.grabbing { cursor: grabbing; }
+  #scope { height: 220px; background: #0d111a; }
+
+  /* controls */
+  .ctl { margin-bottom: 14px; }
+  .ctl .row { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; }
+  .ctl .row b { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .ctl small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  input[type=range] {
+    width: 100%; margin: 8px 0 0; -webkit-appearance: none; appearance: none;
+    height: 4px; border-radius: 2px; background: var(--line); outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--amber); border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--amber);
+    cursor: pointer;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%; background: var(--amber);
+    border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--amber); cursor: pointer;
+  }
+  input[type=range]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px rgba(255,179,64,.5); }
+
+  .seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--bg); border-radius: 9px; padding: 3px; gap: 3px; }
+  .seg button {
+    border: 0; background: transparent; color: var(--muted); padding: 7px 0; border-radius: 7px;
+    font: inherit; font-size: 13px; cursor: pointer;
+  }
+  .seg button[aria-pressed=true] { background: var(--line); color: var(--text); }
+  .switch {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 9px 0; border-top: 1px solid var(--line); font-size: 13px; cursor: pointer;
+  }
+  .switch span small { display: block; color: var(--muted); font-size: 12px; }
+  .switch input { position: absolute; opacity: 0; pointer-events: none; }
+  .switch i {
+    flex: none; width: 38px; height: 22px; border-radius: 11px; background: var(--line);
+    position: relative; transition: background .2s;
+  }
+  .switch i::after {
+    content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--text); transition: transform .2s;
+  }
+  .switch input:checked + i { background: var(--green); }
+  .switch input:checked + i::after { transform: translateX(16px); background: #06240f; }
+  .switch input:focus-visible + i { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+  /* readouts */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-top: 14px; }
+  .stat { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; }
+  .stat span { display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .stat b { font-size: 20px; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .stat u { text-decoration: none; font-size: 12px; color: var(--muted); margin-left: 3px; }
+
+  /* energy ledger */
+  .ledger { display: grid; gap: 9px; }
+  .bar { display: grid; grid-template-columns: 130px 1fr 64px; gap: 10px; align-items: center; font-size: 13px; }
+  .bar .track { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+  .bar .fill { height: 100%; width: 0; border-radius: 4px; transition: width .12s linear; }
+  .bar output { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .note { color: var(--muted); font-size: 13px; margin: 12px 0 0; }
+  #lenz { color: var(--violet); }
+
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 16px; }
+  .steps .card b { color: var(--amber); }
+  .steps p { margin: 0; color: #c1c8d8; font-size: 14px; }
+  .steps .n { font-size: 12px; font-weight: 700; color: var(--amber); letter-spacing: .1em; margin-bottom: 6px; }
+
+  .try { margin: 0; padding-left: 18px; color: #c1c8d8; font-size: 13px; }
+  .try li { margin-bottom: 8px; }
+  .try em { color: var(--violet); font-style: normal; }
+
+  details { margin-top: 16px; }
+  details summary { cursor: pointer; font-weight: 600; }
+  details ul { color: #c1c8d8; padding-left: 20px; }
+  details code { color: var(--amber); }
+  footer { margin-top: 24px; color: var(--muted); font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Dynamo: how motion becomes electricity</h1>
+    <p>
+      A magnet spins next to a coil. The changing magnetic flux pushes charge around the wire —
+      <span class="eq">EMF = −N · dΦ/dt</span>. Spin it, load it, break the circuit, and watch where the energy goes.
+    </p>
+  </header>
+
+  <div class="grid">
+    <section class="card">
+      <h2>The generator &nbsp;·&nbsp; drag the magnet to spin it by hand</h2>
+      <canvas id="machine" width="640" height="480" aria-label="Animated generator: spinning magnet, coils and a lamp"></canvas>
+      <div class="stats" aria-live="off">
+        <div class="stat"><span>Speed</span><b id="rRpm">0</b><u>rpm</u></div>
+        <div class="stat"><span>Voltage</span><b id="rV">0</b><u>V peak</u></div>
+        <div class="stat"><span>Current</span><b id="rI">0</b><u>mA rms</u></div>
+        <div class="stat"><span>Lamp power</span><b id="rP">0</b><u>W</u></div>
+        <div class="stat"><span>Magnetic drag</span><b id="rDrag" style="color:var(--violet)">0</b><u>mN·m</u></div>
+        <div class="stat"><span>Efficiency</span><b id="rEff">–</b><u>%</u></div>
+      </div>
+    </section>
+
+    <aside class="card" aria-label="Controls">
+      <h2>Controls</h2>
+
+      <div class="ctl">
+        <div class="row"><label for="cDrive">Crank effort (torque)</label><b id="vDrive"></b></div>
+        <input id="cDrive" type="range" min="0" max="0.5" step="0.01" value="0.18">
+        <small>The only energy source. Everything else is conversion.</small>
+      </div>
+      <div class="ctl">
+        <div class="row"><label for="cTurns">Coil turns (N)</label><b id="vTurns"></b></div>
+        <input id="cTurns" type="range" min="100" max="1000" step="50" value="600">
+        <small>More turns → more volts, but more wire resistance.</small>
+      </div>
+      <div class="ctl">
+        <div class="row"><label for="cMag">Magnet strength (B)</label><b id="vMag"></b></div>
+        <input id="cMag" type="range" min="0.1" max="0.8" step="0.05" value="0.5">
+      </div>
+      <div class="ctl">
+        <div class="row"><label for="cLoad">Load resistance</label><b id="vLoad"></b></div>
+        <input id="cLoad" type="range" min="10" max="100" step="1" value="40">
+        <small>Lower resistance → more current → harder to turn.</small>
+      </div>
+
+      <div class="ctl">
+        <div class="row"><span>Load type</span></div>
+        <div class="seg" role="group" aria-label="Load type" style="margin-top:8px">
+          <button id="loadBulb" aria-pressed="true">Filament lamp</button>
+          <button id="loadLed" aria-pressed="false">LED</button>
+        </div>
+      </div>
+
+      <label class="switch">
+        <span>Bridge rectifier<small>Flips the negative half-cycles → pulsing DC</small></span>
+        <input id="cRect" type="checkbox" role="switch"><i></i>
+      </label>
+      <label class="switch">
+        <span>Circuit closed<small>Open it: no current, no drag, free spin</small></span>
+        <input id="cClosed" type="checkbox" role="switch" checked><i></i>
+      </label>
+
+      <h2 style="margin-top:20px">Try this</h2>
+      <ol class="try">
+        <li>Open the circuit, then close it. Watch speed drop and <em>magnetic drag</em> jump — that's the cost of the electricity.</li>
+        <li>Drop load resistance to 10 Ω: more current, lower speed, more heat in the coil.</li>
+        <li>Switch to LED without the rectifier: it only lights on half the cycle. Add the bridge: twice the pulses.</li>
+        <li>Double the turns: voltage rises, but so does coil resistance — find the sweet spot for max lamp power.</li>
+      </ol>
+    </aside>
+  </div>
+
+  <section class="card" style="margin-top:16px">
+    <h2>Flux and voltage &nbsp;·&nbsp; voltage peaks where flux changes fastest</h2>
+    <canvas id="scope" aria-label="Oscilloscope trace of magnetic flux and generated voltage"></canvas>
+  </section>
+
+  <section class="card" style="margin-top:16px">
+    <h2>Where does the energy go?</h2>
+    <div class="ledger" id="ledger"></div>
+    <p class="note">
+      Steady state: <b>input = friction + coil heat + rectifier loss + lamp</b>. The generator creates nothing —
+      <span id="lenz">the current in the coil builds its own magnetic field that resists the magnet (Lenz's law)</span>,
+      so every watt out costs a watt of cranking.
+    </p>
+  </section>
+
+  <div class="steps">
+    <div class="card"><div class="n">1 · INDUCE</div>
+      <p>The magnet's field through the coil is <b>Φ = B·A·cos θ</b>. As it rotates, Φ rises and falls. A changing flux induces a voltage: <b>EMF = N·B·A·ω·sin θ</b>. Faster spin, more turns or a stronger magnet → higher voltage.</p></div>
+    <div class="card"><div class="n">2 · DELIVER</div>
+      <p>With the circuit closed the EMF drives current <b>I = EMF / (R<sub>load</sub> + R<sub>coil</sub>)</b> through the lamp. Because the magnet reverses, the current reverses too: that's AC. A diode bridge turns it into one-way pulses.</p></div>
+    <div class="card"><div class="n">3 · PAY</div>
+      <p>The coil current makes a torque <b>τ = N·B·A·I·sin θ</b> opposing the spin. Close the switch and the magnet gets harder to turn. Power out = EMF × I = torque × speed. That's conservation of energy.</p></div>
+  </div>
+
+  <details class="card">
+    <summary>Build the real thing (≈ 15 min)</summary>
+    <ul>
+      <li><b>Magnet:</b> two 20 mm neodymium disc magnets glued N/S-out on opposite sides of a wooden or 3D-printed disc, mounted on a shaft or the bit of a hand drill.</li>
+      <li><b>Coil:</b> 500–1000 turns of 0.2–0.3 mm enamelled copper wire on a bobbin or a cardboard tube with an iron bolt in the middle. Scrape the enamel off both ends.</li>
+      <li><b>Rectifier + LED:</b> four <code>1N5819</code> Schottky diodes in a bridge (lower drop than <code>1N4148</code>), then an LED with a 330 Ω resistor.</li>
+      <li><b>Run:</b> spin the magnet a few millimetres from the coil's end at drill speed. Expect a few volts open-circuit and a flickering LED. Put a multimeter across the coil first to see the AC.</li>
+    </ul>
+    Same physics as the simulation — the numbers above will differ with your magnet, gap and coil geometry.
+  </details>
+
+  <footer>
+    Model: rigid rotor J·dω/dt = τ<sub>crank</sub> − τ<sub>magnetic</sub> − b·ω, resistive circuit, ideal 0.7 V diodes, LED V<sub>f</sub> = 2 V.
+    Ignores coil inductance, eddy currents, iron saturation and air-gap geometry, so absolute values are illustrative.
+  </footer>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const TAU = Math.PI * 2;
+  const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+  const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
+
+  // ---------- physics ----------
+  const P = {
+    A: 0.003,      // coil cross-section, m²
+    rTurn: 0.03,   // coil wire resistance per turn, Ω
+    J: 0.01,       // rotor + flywheel inertia, kg·m²
+    b: 0.005,      // viscous friction, N·m·s/rad
+    Vd: 0.7,       // diode drop, V
+    Vf: 2.0,       // LED forward voltage, V
+    lampRated: 1.5,// W for full brightness
+    ledRated: 0.12 // A for full brightness
+  };
+  const S = {
+    N: 600, B: 0.5, R: 40, drive: 0.18,
+    closed: true, rect: false, led: false,
+    th: 0.6, w: 0, e: 0, i: 0, tauEm: 0, grab: null,
+    // smoothed
+    pMech: 0, pFric: 0, pCoil: 0, pBridge: 0, pLoad: 0, pRes: 0,
+    iRms2: 0, eMax: 6, tauAvg: 0, glow: 0,
+    disp: 0, t: 0
+  };
+  const K = () => S.N * S.B * P.A;      // V·s/rad (flux linkage amplitude)
+  const rCoil = () => S.N * P.rTurn;
+
+  const ema = (prev, x, dt, tau) => prev + (x - prev) * (1 - Math.exp(-dt / tau));
+
+  function step(dt) {
+    const k = K(), r = rCoil();
+    const s = Math.sin(S.th);
+    const e = k * S.w * s;
+
+    let i = 0;
+    if (S.closed) {
+      const Rt = S.R + r;
+      const drop = (S.rect ? 2 * P.Vd : 0) + (S.led ? P.Vf : 0);
+      if (S.rect)     i = Math.sign(e) * Math.max(0, Math.abs(e) - drop) / Rt;
+      else if (S.led) i = Math.max(0, e - drop) / Rt;
+      else            i = e / Rt;
+    }
+
+    const tauEm = k * s * i;                                  // Lenz: opposes rotation
+    const tauIn = S.drive + (S.grab === null ? 0
+      : clamp(1.5 * wrap(S.grab - S.th) - 0.15 * S.w, -1.2, 1.2));
+
+    // power bookkeeping uses the same ω the electrical side saw
+    const pMech = tauIn * S.w;
+    const pFric = P.b * S.w * S.w;
+    const pCoil = i * i * r;
+    const pBridge = S.rect ? 2 * P.Vd * Math.abs(i) : 0;
+    const pRes = i * i * S.R;
+    const pLoad = pRes + (S.led ? P.Vf * Math.abs(i) : 0);
+
+    S.w += (tauIn - tauEm - P.b * S.w) / P.J * dt;
+    S.th = ((S.th + S.w * dt) % TAU + TAU) % TAU;
+    S.e = e; S.i = i; S.tauEm = tauEm;
+
+    S.pMech = ema(S.pMech, pMech, dt, 0.4);
+    S.pFric = ema(S.pFric, pFric, dt, 0.4);
+    S.pCoil = ema(S.pCoil, pCoil, dt, 0.4);
+    S.pBridge = ema(S.pBridge, pBridge, dt, 0.4);
+    S.pLoad = ema(S.pLoad, pLoad, dt, 0.4);
+    S.pRes = ema(S.pRes, pRes, dt, 0.15);              // filament thermal lag
+    S.iRms2 = ema(S.iRms2, i * i, dt, 0.4);
+    S.tauAvg = ema(S.tauAvg, Math.abs(tauEm), dt, 0.4);
+    S.glow = S.led ? ema(S.glow, clamp(Math.abs(i) / P.ledRated, 0, 1), dt, 0.025)
+                   : ema(S.glow, clamp(S.pRes / P.lampRated, 0, 1), dt, 0.15);
+    S.disp += i * dt * 600;                            // electron drift, px
+    S.t += dt;
+  }
+
+  // ---------- machine canvas ----------
+  const mc = document.getElementById('machine');
+  const mx = mc.getContext('2d');
+  const CX = 320, CY = 230, MAG_L = 80, MAG_W = 25;
+  const COILS = [{ x0: 96, x1: 176 }, { x0: 464, x1: 544 }];
+  const WIN_Y0 = 194, WIN_Y1 = 266;
+
+  // closed current loop (conventional current for i > 0)
+  const loop = [[136,194],[136,110],[504,110],[504,194],[504,266],[504,390],[360,390],[280,390],[136,390],[136,266],[136,194]];
+  const seg = []; let loopLen = 0;
+  for (let n = 0; n < loop.length - 1; n++) {
+    const [ax, ay] = loop[n], [bx, by] = loop[n + 1];
+    const len = Math.hypot(bx - ax, by - ay);
+    seg.push({ ax, ay, bx, by, len, start: loopLen }); loopLen += len;
+  }
+  function pointAt(d) {
+    d = ((d % loopLen) + loopLen) % loopLen;
+    for (const q of seg) if (d <= q.start + q.len) {
+      const u = (d - q.start) / q.len;
+      return [q.ax + (q.bx - q.ax) * u, q.ay + (q.by - q.ay) * u];
+    }
+    return loop[0];
+  }
+
+  function drawField(ctx) {
+    ctx.save(); ctx.translate(CX, CY); ctx.rotate(S.th);
+    ctx.lineWidth = 1.2;
+    for (const r0 of [95, 140, 190, 245]) {
+      for (const sy of [1, -1]) {
+        ctx.beginPath();
+        for (let a = 0.12; a <= Math.PI - 0.12; a += 0.05) {
+          const r = r0 * Math.sin(a) * Math.sin(a);
+          const x = r * Math.cos(a), y = sy * r * Math.sin(a);
+          a === 0.12 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = `rgba(90,169,255,${0.34 - r0 / 1000})`;
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawMachine() {
+    const ctx = mx, W = mc.width, H = mc.height;
+    ctx.setTransform(W / 640, 0, 0, H / 480, 0, 0);
+    ctx.clearRect(0, 0, 640, 480);
+
+    // field lines
+    drawField(ctx);
+
+    // iron core joining coils to the rotor
+    ctx.fillStyle = '#39445c';
+    ctx.fillRect(COILS[0].x0 - 14, CY - 20, 230 - (COILS[0].x0 - 14), 40);
+    ctx.fillRect(410, CY - 20, COILS[1].x1 + 14 - 410, 40);
+
+    // coils
+    const turnsShown = Math.round(S.N / 25);
+    const emfNorm = clamp(Math.abs(S.e) / (K() * 30), 0, 1);
+    for (const c of COILS) {
+      const mid = (c.x0 + c.x1) / 2;
+      if (emfNorm > 0.02) {
+        const g = ctx.createRadialGradient(mid, CY, 10, mid, CY, 90);
+        g.addColorStop(0, `rgba(255,179,64,${0.5 * emfNorm})`);
+        g.addColorStop(1, 'rgba(255,179,64,0)');
+        ctx.fillStyle = g; ctx.fillRect(mid - 100, CY - 100, 200, 200);
+      }
+      const gr = ctx.createLinearGradient(0, WIN_Y0, 0, WIN_Y1);
+      gr.addColorStop(0, '#e0924d'); gr.addColorStop(0.5, '#b8692c'); gr.addColorStop(1, '#8a4a1c');
+      ctx.fillStyle = gr;
+      ctx.beginPath(); ctx.roundRect(c.x0, WIN_Y0, c.x1 - c.x0, WIN_Y1 - WIN_Y0, 6); ctx.fill();
+      ctx.strokeStyle = 'rgba(20,10,0,0.55)'; ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let n = 1; n < turnsShown; n++) {
+        const x = c.x0 + (n / turnsShown) * (c.x1 - c.x0);
+        ctx.moveTo(x, WIN_Y0 + 1); ctx.lineTo(x, WIN_Y1 - 1);
+      }
+      ctx.stroke();
+    }
+
+    // wires
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.strokeStyle = S.closed ? '#47536f' : '#2a3246'; ctx.lineWidth = 4;
+    ctx.beginPath();
+    loop.forEach(([x, y], n) => n ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+    ctx.stroke();
+
+    // open switch gap
+    if (!S.closed) {
+      ctx.fillStyle = '#0d111a'; ctx.fillRect(130, 250, 12, 18);
+      ctx.strokeStyle = '#ff6b6b'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(136, 266); ctx.lineTo(150, 252); ctx.stroke();
+      ctx.fillStyle = '#ff6b6b'; ctx.font = '600 11px system-ui'; ctx.textAlign = 'left';
+      ctx.fillText('OPEN', 66, 340);
+    }
+
+    // electrons
+    if (S.closed) {
+      const n = 46, gap = loopLen / n;
+      const mag = clamp(Math.abs(S.i) * 6, 0.25, 1);
+      ctx.fillStyle = `rgba(255,220,130,${0.35 + 0.65 * mag})`;
+      for (let q = 0; q < n; q++) {
+        const [x, y] = pointAt(q * gap + S.disp);
+        ctx.beginPath(); ctx.arc(x, y, 2.4, 0, TAU); ctx.fill();
+      }
+    }
+
+    // rotor / magnet
+    ctx.save(); ctx.translate(CX, CY); ctx.rotate(S.th);
+    ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 14;
+    ctx.fillStyle = '#ff5d5d'; ctx.fillRect(0, -MAG_W, MAG_L, MAG_W * 2);
+    ctx.fillStyle = '#4d8dff'; ctx.fillRect(-MAG_L, -MAG_W, MAG_L, MAG_W * 2);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(255,255,255,.88)'; ctx.font = '700 22px system-ui';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('N', MAG_L / 2, 1); ctx.fillText('S', -MAG_L / 2, 1);
+    ctx.restore();
+    ctx.fillStyle = '#0d111a'; ctx.strokeStyle = '#8a94ab'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(CX, CY, 9, 0, TAU); ctx.fill(); ctx.stroke();
+
+    // lamp / LED
+    drawLoad(ctx, 320, 390);
+
+    // labels
+    ctx.fillStyle = '#8a94ab'; ctx.font = '600 11px system-ui'; ctx.textBaseline = 'alphabetic';
+    ctx.textAlign = 'center';
+    ctx.fillText('COIL', 46, 234); ctx.fillText('COIL', 594, 234);
+    ctx.fillText('ROTATING MAGNET', CX, CY + 118);
+    ctx.fillText(S.led ? 'LED' : 'LAMP', 320, 450);
+    if (S.rect) { ctx.fillStyle = '#4ade80'; ctx.fillText('BRIDGE RECTIFIER ON', 320, 100); }
+  }
+
+  function drawLoad(ctx, x, y) {
+    const g = S.glow;
+    if (S.led) {
+      const col = [92, 255, 157];
+      if (g > 0.01) {
+        const rg = ctx.createRadialGradient(x, y - 6, 4, x, y - 6, 28 + 90 * g);
+        rg.addColorStop(0, `rgba(${col},${0.8 * g})`); rg.addColorStop(1, `rgba(${col},0)`);
+        ctx.fillStyle = rg; ctx.fillRect(x - 130, y - 130, 260, 260);
+      }
+      ctx.fillStyle = `rgba(${col},${0.25 + 0.75 * g})`;
+      ctx.strokeStyle = '#9fb0c8'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x - 16, y + 8); ctx.lineTo(x - 16, y - 8);
+      ctx.arc(x, y - 8, 16, Math.PI, 0); ctx.lineTo(x + 16, y + 8); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      return;
+    }
+    if (g > 0.01) {
+      const rg = ctx.createRadialGradient(x, y, 6, x, y, 40 + 110 * g);
+      rg.addColorStop(0, `rgba(255,214,120,${0.85 * g})`); rg.addColorStop(1, 'rgba(255,214,120,0)');
+      ctx.fillStyle = rg; ctx.fillRect(x - 160, y - 160, 320, 320);
+    }
+    ctx.fillStyle = `rgba(255,226,150,${0.06 + 0.5 * g})`;
+    ctx.strokeStyle = '#9fb0c8'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x, y, 34, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = `rgb(${180 + 75 * g},${140 + 90 * g},${90 + 100 * g})`; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(x - 38, y);
+    for (let n = 0; n < 6; n++) ctx.lineTo(x - 24 + n * 9.6, y + (n % 2 ? -8 : 8));
+    ctx.lineTo(x + 38, y); ctx.stroke();
+  }
+
+  // ---------- oscilloscope ----------
+  const sc = document.getElementById('scope');
+  const sx = sc.getContext('2d');
+  const WINDOW = 3;           // seconds shown
+  const hist = [];
+
+  function drawScope() {
+    const W = sc.width, H = sc.height, dpr = W / sc.clientWidth;
+    sx.setTransform(1, 0, 0, 1, 0, 0);
+    sx.clearRect(0, 0, W, H);
+    sx.scale(dpr, dpr);
+    const w = sc.clientWidth, h = sc.clientHeight, mid = h / 2, amp = h / 2 - 14;
+
+    sx.strokeStyle = '#1b2334'; sx.lineWidth = 1;
+    for (let n = 1; n < 6; n++) { sx.beginPath(); sx.moveTo(n * w / 6, 0); sx.lineTo(n * w / 6, h); sx.stroke(); }
+    for (let n = -1; n <= 1; n++) { sx.beginPath(); sx.moveTo(0, mid + n * amp / 1.0); sx.lineTo(w, mid + n * amp); sx.stroke(); }
+    sx.strokeStyle = '#2d3850'; sx.beginPath(); sx.moveTo(0, mid); sx.lineTo(w, mid); sx.stroke();
+
+    while (hist.length && hist[0].t < S.t - WINDOW) hist.shift();
+    let peak = 0;
+    for (const p of hist) peak = Math.max(peak, Math.abs(p.e));
+    S.eMax = ema(S.eMax, Math.max(6, peak * 1.1), 0.016, 0.4);
+
+    const trace = (key, scale, color, width) => {
+      sx.beginPath();
+      hist.forEach((p, n) => {
+        const x = w - (S.t - p.t) / WINDOW * w;
+        const y = mid - clamp(p[key] / scale, -1, 1) * amp;
+        n ? sx.lineTo(x, y) : sx.moveTo(x, y);
+      });
+      sx.strokeStyle = color; sx.lineWidth = width; sx.lineJoin = 'round'; sx.stroke();
+    };
+    trace('f', 1, 'rgba(90,169,255,.85)', 1.8);
+    trace('e', S.eMax, '#ffb340', 2.4);
+
+    sx.font = '600 11px system-ui'; sx.textBaseline = 'top'; sx.textAlign = 'left';
+    sx.fillStyle = '#5aa9ff'; sx.fillText('● Flux Φ = cos θ (normalised)', 12, 8);
+    sx.fillStyle = '#ffb340'; sx.fillText('● Voltage (EMF)', 12, 24);
+    sx.fillStyle = '#8a94ab'; sx.textAlign = 'right';
+    sx.fillText(`±${S.eMax.toFixed(0)} V`, w - 10, 8);
+    sx.fillText(`last ${WINDOW} s`, w - 10, h - 18);
+  }
+
+  // ---------- ledger ----------
+  const rows = [
+    ['mech', 'Crank input', '#ffb340'],
+    ['fric', 'Bearing friction', '#8a94ab'],
+    ['coil', 'Coil heating', '#ff6b6b'],
+    ['bridge', 'Rectifier loss', '#a78bfa'],
+    ['load', 'Lamp / LED', '#4ade80']
+  ];
+  const ledger = document.getElementById('ledger');
+  rows.forEach(([key, label, color]) => {
+    const d = document.createElement('div'); d.className = 'bar';
+    d.innerHTML = `<span>${label}</span><div class="track"><div class="fill" id="b_${key}" style="background:${color}"></div></div><output id="o_${key}">0 W</output>`;
+    ledger.appendChild(d);
+  });
+  const $ = id => document.getElementById(id);
+
+  function updateReadouts() {
+    $('rRpm').textContent = Math.round(Math.abs(S.w) * 60 / TAU);
+    $('rV').textContent = (K() * Math.abs(S.w)).toFixed(1);
+    $('rI').textContent = Math.round(Math.sqrt(S.iRms2) * 1000);
+    $('rP').textContent = S.pLoad.toFixed(2);
+    $('rDrag').textContent = Math.round(S.tauAvg * 1000);
+    $('rEff').textContent = S.pMech > 0.05 ? Math.round(clamp(S.pLoad / S.pMech, 0, 1) * 100) : '–';
+    const max = Math.max(S.pMech, 0.5);
+    for (const [key] of rows) {
+      const v = Math.max(0, S[{ mech: 'pMech', fric: 'pFric', coil: 'pCoil', bridge: 'pBridge', load: 'pLoad' }[key]]);
+      $('b_' + key).style.width = (clamp(v / max, 0, 1) * 100).toFixed(1) + '%';
+      $('o_' + key).textContent = v.toFixed(2) + ' W';
+    }
+  }
+
+  // ---------- controls ----------
+  const bindRange = (id, out, fmt, apply) => {
+    const el = $(id), o = $(out);
+    const f = () => { const v = parseFloat(el.value); apply(v); o.textContent = fmt(v); };
+    el.addEventListener('input', f); f();
+  };
+  bindRange('cDrive', 'vDrive', v => v.toFixed(2) + ' N·m', v => S.drive = v);
+  bindRange('cTurns', 'vTurns', v => v.toFixed(0), v => S.N = v);
+  bindRange('cMag', 'vMag', v => v.toFixed(2) + ' T', v => S.B = v);
+  bindRange('cLoad', 'vLoad', v => v.toFixed(0) + ' Ω', v => S.R = v);
+  $('cRect').addEventListener('change', e => S.rect = e.target.checked);
+  $('cClosed').addEventListener('change', e => S.closed = e.target.checked);
+  const setLoad = led => {
+    S.led = led;
+    $('loadBulb').setAttribute('aria-pressed', String(!led));
+    $('loadLed').setAttribute('aria-pressed', String(led));
+  };
+  $('loadBulb').addEventListener('click', () => setLoad(false));
+  $('loadLed').addEventListener('click', () => setLoad(true));
+
+  // drag the magnet
+  const angleOf = ev => {
+    const r = mc.getBoundingClientRect();
+    const x = (ev.clientX - r.left) * 640 / r.width - CX;
+    const y = (ev.clientY - r.top) * 480 / r.height - CY;
+    return { a: Math.atan2(y, x), d: Math.hypot(x, y) };
+  };
+  mc.addEventListener('pointerdown', ev => {
+    const { a, d } = angleOf(ev);
+    if (d > MAG_L + 30) return;
+    S.grab = a; mc.setPointerCapture(ev.pointerId); mc.classList.add('grabbing');
+  });
+  mc.addEventListener('pointermove', ev => { if (S.grab !== null) S.grab = angleOf(ev).a; });
+  const release = () => { S.grab = null; mc.classList.remove('grabbing'); };
+  mc.addEventListener('pointerup', release);
+  mc.addEventListener('pointercancel', release);
+
+  // ---------- main loop ----------
+  function fit(canvas) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+  }
+
+  let last = performance.now(), lastUi = 0;
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.05); last = now;
+    const n = Math.max(1, Math.ceil(dt / 0.001));
+    for (let q = 0; q < n; q++) step(dt / n);
+    hist.push({ t: S.t, e: S.e, f: Math.cos(S.th) });
+    fit(mc); fit(sc);
+    drawMachine(); drawScope();
+    if (now - lastUi > 100) { updateReadouts(); lastUi = now; }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  window.dynamo = { state: S, step, K, rCoil, P };   // handle for tests / console tinkering
+})();
+</script>
+</body>
+</html>
