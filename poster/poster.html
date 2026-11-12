@@ -6,9 +6,8 @@
 <style>
   @page { size: 70cm 56cm; margin: 0; }
   :root {
-    --ink: #0b0b0d; --paper: #faf8f5; --body: #3a3a42; --rule: #e6e1d8; --mute: #6b6b76;
-    --orange: #c2410c; --blue: #0369a1; --green: #15803d; --red: #c81e1e;
-    --brand-orange: #f26a1b; --coral: #e5484d;
+    --ink: #0b0b0d; --paper: #faf8f5; --body: #3a3a42; --rule: #e6e1d8;
+    --orange: #c2410c; --blue: #0369a1; --green: #15803d; --red: #c81e1e; --brand-orange: #f26a1b;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #fff; }
@@ -18,7 +17,7 @@
     position: relative; width: 70cm; height: 56cm; overflow: hidden;
     border: 0.9cm solid var(--ink); background: var(--paper);
     padding: 1.1cm 1.6cm 1cm;
-    display: grid; grid-template-rows: 6.8cm 14.6cm 18cm 7.8cm; row-gap: 1.4cm;
+    display: grid; grid-template-rows: 6.8cm 1fr 7.6cm; row-gap: 1.4cm;
   }
   .poster::after { content: ""; position: absolute; inset: 0.2cm; border: 0.1cm solid var(--brand-orange); border-radius: 0.2cm; pointer-events: none; }
 
@@ -28,40 +27,33 @@
   .brand svg { width: 3.7cm; height: 3.7cm; flex: none; }
   .word { font-size: 96pt; line-height: 1; letter-spacing: -0.025em; }
   .word b { font-weight: 800; } .word span { font-weight: 300; }
-  .tag { font-size: 24pt; color: #cfcfd6; margin-top: 0.3cm; font-weight: 400; }
+  .tag { font-size: 24pt; color: #cfcfd6; margin-top: 0.3cm; }
   .team { text-align: right; }
   .team .ev { font-size: 15pt; letter-spacing: .16em; text-transform: uppercase; color: var(--brand-orange); font-weight: 700; }
   .team .names { font-size: 30pt; font-weight: 700; line-height: 1.22; margin: 0.25cm 0; }
   .team .cls { font-size: 20pt; color: #cfcfd6; line-height: 1.35; }
 
-  /* ---------- headings ---------- */
-  h2 { margin: 0 0 0.6cm; display: inline-block; align-self: flex-start; font-size: 30pt; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; line-height: 1.1; padding-bottom: 0.14cm; border-bottom: 0.16cm solid currentColor; }
+  /* ---------- headings & text ---------- */
+  h2 { margin: 0 0 0.7cm; display: inline-block; align-self: flex-start; font-size: 30pt; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; line-height: 1.1; padding-bottom: 0.14cm; border-bottom: 0.16cm solid currentColor; }
   .c-orange { color: var(--orange); } .c-blue { color: var(--blue); } .c-green { color: var(--green); } .c-red { color: var(--red); }
   .sec { display: flex; flex-direction: column; min-height: 0; }
-  p, li { font-size: 22pt; line-height: 1.32; color: var(--body); }
-  p { margin: 0 0 0.35cm; }
+  p, li { font-size: 24pt; line-height: 1.34; color: var(--body); }
+  p { margin: 0 0 0.6cm; }
 
-  /* ---------- screens ---------- */
-  .shots { display: grid; grid-template-columns: repeat(4, 1fr); column-gap: 0.9cm; flex: 1; min-height: 0; }
+  /* ---------- main ---------- */
+  .main { display: grid; grid-template-columns: 17.5cm 1fr; column-gap: 1.8cm; min-height: 0; }
+  .steps { list-style: none; margin: 0; padding: 0; }
+  .steps li { display: grid; grid-template-columns: 1.25cm 1fr; column-gap: 0.5cm; align-items: start; margin-bottom: 0.7cm; }
+  .steps i { font-style: normal; width: 1.25cm; height: 1.25cm; border-radius: 50%; background: var(--ink); color: #fff; font-weight: 800; font-size: 20pt; display: grid; place-items: center; }
+
+  .shots { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0.9cm 0.9cm; flex: 1; min-height: 0; }
   .shot { display: flex; flex-direction: column; min-height: 0; }
   .shot .img { border-radius: 0.55cm; overflow: hidden; line-height: 0; border: 0.06cm solid #cfc9bd; aspect-ratio: 16 / 9; background: #000; }
   .shot img { width: 100%; display: block; }
-  .shot h3 { margin: 0.55cm 0 0.1cm; font-size: 28pt; font-weight: 800; line-height: 1.1; display: flex; align-items: center; gap: 0.35cm; }
-  .shot h3 i { font-style: normal; width: 1.1cm; height: 1.1cm; border-radius: 50%; color: #fff; display: grid; place-items: center; font-size: 19pt; flex: none; }
-  .shot p { font-size: 20pt; line-height: 1.28; margin: 0; color: var(--body); }
+  .shot h3 { margin: 0.4cm 0 0; font-size: 26pt; font-weight: 800; line-height: 1.15; display: flex; align-items: baseline; gap: 0.3cm; }
+  .shot h3 span { font-size: 20pt; font-weight: 400; color: var(--body); }
 
-  /* ---------- middle row ---------- */
-  .mid { display: grid; grid-template-columns: 1.05fr 1fr 1fr; column-gap: 1.8cm; min-height: 0; }
-  .steps { list-style: none; margin: 0.15cm 0 0; padding: 0; }
-  .steps li { display: grid; grid-template-columns: 1.15cm 1fr; column-gap: 0.5cm; align-items: start; margin-bottom: 0.4cm; font-size: 21pt; line-height: 1.3; }
-  .steps i { font-style: normal; width: 1.15cm; height: 1.15cm; border-radius: 50%; background: var(--ink); color: #fff; font-weight: 800; font-size: 19pt; display: grid; place-items: center; }
-  figure { margin: 0; flex: 1; display: flex; flex-direction: column; min-height: 0; }
-  figure svg { width: 100%; height: auto; display: block; }
-  figcaption { font-size: 16pt; line-height: 1.3; color: var(--mute); margin-top: 0.25cm; }
-  figcaption b { color: var(--ink); }
-  svg text { font-family: Inter, "Segoe UI", "Helvetica Neue", Arial, sans-serif; }
-
-  /* ---------- bottom row ---------- */
+  /* ---------- bottom ---------- */
   .base { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 1.8cm; border-top: 0.05cm solid var(--rule); padding-top: 0.9cm; min-height: 0; }
   .base ul { margin: 0; padding-left: 0.8cm; }
   .base li { margin-bottom: 0.25cm; }
@@ -97,43 +89,30 @@
     </div>
   </header>
 
-  <section class="sec">
-    <h2 class="c-orange">Model / Prototype: the working app</h2>
-    <div class="shots">
-      <div class="shot"><div class="img"><img src="screens/overview.jpg" alt="Overview screen"></div>
-        <h3 style="color:var(--orange)"><i style="background:var(--orange)">1</i>Overview</h3>
-        <p>BMI, body view and weekly progress at a glance.</p></div>
-      <div class="shot"><div class="img"><img src="screens/workout.jpg" alt="Workout screen"></div>
-        <h3 style="color:var(--blue)"><i style="background:var(--blue)">2</i>Workout</h3>
-        <p>A weekly plan matched to your time and equipment.</p></div>
-      <div class="shot"><div class="img"><img src="screens/diet.jpg" alt="Diet screen"></div>
-        <h3 style="color:var(--green)"><i style="background:var(--green)">3</i>Diet</h3>
-        <p>Meals, calories and protein planned for your goal.</p></div>
-      <div class="shot"><div class="img"><img src="screens/checkup.jpg" alt="Checkup screen"></div>
-        <h3 style="color:var(--red)"><i style="background:var(--red)">4</i>Checkup</h3>
-        <p>Pulse, steadiness, vision, hearing and reaction time, measured on the computer.</p></div>
-    </div>
-  </section>
-
-  <section class="mid">
+  <section class="main">
     <div class="sec">
-      <h2 class="c-blue">Aim &amp; how it works</h2>
-      <p><b>Aim:</b> make healthy living simple. One app plans your workouts and meals for your goal and checks your body in five minutes. It also has an AI Doctor section.</p>
+      <h2 class="c-blue">Aim</h2>
+      <p>Make healthy living simple. One app plans your workouts and meals for your goal and checks your body in five minutes.</p>
+      <h2 class="c-orange" style="margin-top:0.6cm">How it works</h2>
       <ol class="steps">
         <li><i>1</i><span>Enter your age, height, weight and goal.</span></li>
         <li><i>2</i><span>Get a workout and diet plan built for you.</span></li>
         <li><i>3</i><span>Take the checkup and track your progress.</span></li>
       </ol>
     </div>
+
     <div class="sec">
-      <h2 class="c-green">Daily macro split</h2>
-      <figure><svg id="donut" viewBox="0 0 440 290" role="img" aria-label="Donut chart of daily protein, carbs and fat"></svg>
-        <figcaption><b>Figure 1.</b> Sample plan for a 14-year-old, 160 cm, 43.5 kg, goal: build muscle.</figcaption></figure>
-    </div>
-    <div class="sec">
-      <h2 class="c-red">Burn vs eat</h2>
-      <figure><svg id="bars" viewBox="0 0 440 290" role="img" aria-label="Bar chart of daily calories burned versus diet target"></svg>
-        <figcaption><b>Figure 2.</b> The diet target sits slightly above daily burn, a small surplus for muscle gain.</figcaption></figure>
+      <h2 class="c-green">Model / Prototype: the working app</h2>
+      <div class="shots">
+        <div class="shot"><div class="img"><img src="screens/overview.jpg" alt="Overview screen"></div>
+          <h3 style="color:var(--orange)">Overview <span>BMI, body view and progress</span></h3></div>
+        <div class="shot"><div class="img"><img src="screens/workout.jpg" alt="Workout screen"></div>
+          <h3 style="color:var(--blue)">Workout <span>a weekly plan for you</span></h3></div>
+        <div class="shot"><div class="img"><img src="screens/diet.jpg" alt="Diet screen"></div>
+          <h3 style="color:var(--green)">Diet <span>meals, calories and protein</span></h3></div>
+        <div class="shot"><div class="img"><img src="screens/checkup.jpg" alt="Checkup screen"></div>
+          <h3 style="color:var(--red)">Checkup <span>pulse, vision, hearing, reaction</span></h3></div>
+      </div>
     </div>
   </section>
 
@@ -141,7 +120,7 @@
     <div class="sec"><h2 class="c-green">Conclusions</h2>
       <ul class="c-green">
         <li><span>One app can guide training, eating and health checks.</span></li>
-        <li><span>Plans adapt to goal, time and age, with safety tips for under-18s.</span></li>
+        <li><span>Plans adapt to goal, time and age.</span></li>
       </ul></div>
     <div class="sec"><h2 class="c-blue">Applications</h2>
       <ul class="c-blue">
@@ -151,57 +130,9 @@
     <div class="sec"><h2 class="c-orange">Limits</h2>
       <ul class="c-orange">
         <li><span>Educational screening only. It cannot diagnose.</span></li>
-        <li><span>The checkup needs a computer with a camera and speakers.</span></li>
+        <li><span>Checkup needs a camera and speakers.</span></li>
       </ul></div>
   </section>
 </div>
-
-<script>
-const NS = 'http://www.w3.org/2000/svg';
-const el = (tag, attrs = {}, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; };
-
-/* ---------- Figure 1: macro donut (values from the Diet screen: 70 g / 394 g / 77 g, 2,550 kcal) ---------- */
-(function () {
-  const s = document.getElementById('donut');
-  const data = [['Protein', 70, 11, '#c81e1e'], ['Carbs', 394, 62, '#f59e0b'], ['Fat', 77, 27, '#0369a1']];
-  const cx = 120, cy = 145, R = 100, r = 66, tot = 100;
-  let a0 = -Math.PI / 2;
-  data.forEach(([, , pct, c]) => {
-    const a1 = a0 + pct / tot * Math.PI * 2, large = pct > 50 ? 1 : 0;
-    const p = (rad, a) => [cx + rad * Math.cos(a), cy + rad * Math.sin(a)];
-    const [x1, y1] = p(R, a0), [x2, y2] = p(R, a1), [x3, y3] = p(r, a1), [x4, y4] = p(r, a0);
-    s.appendChild(el('path', { d: `M${x1},${y1} A${R},${R} 0 ${large} 1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${large} 0 ${x4},${y4}Z`, fill: c, stroke: '#faf8f5', 'stroke-width': 3 }));
-    a0 = a1;
-  });
-  s.appendChild(el('text', { x: cx, y: cy + 4, 'text-anchor': 'middle', 'font-size': 30, 'font-weight': 800, fill: '#0b0b0d' }, '2,550'));
-  s.appendChild(el('text', { x: cx, y: cy + 26, 'text-anchor': 'middle', 'font-size': 16, fill: '#6b6b76' }, 'kcal a day'));
-  data.forEach(([name, g, pct, c], i) => {
-    const y = 92 + i * 56;
-    s.appendChild(el('rect', { x: 252, y: y - 15, width: 18, height: 18, rx: 4, fill: c }));
-    s.appendChild(el('text', { x: 280, y, 'font-size': 20, 'font-weight': 700, fill: '#0b0b0d' }, name));
-    s.appendChild(el('text', { x: 280, y: y + 23, 'font-size': 17, fill: '#6b6b76' }, `${g} g · ${pct}%`));
-  });
-})();
-
-/* ---------- Figure 2: burn vs target (2,363 kcal burn, 2,550 kcal target from the Diet screen) ---------- */
-(function () {
-  const s = document.getElementById('bars');
-  const m = { l: 88, r: 14, t: 18, b: 56 }, W = 440, H = 290, ih = H - m.t - m.b;
-  const Y = v => m.t + ih - v / 3000 * ih;
-  [0, 1000, 2000, 3000].forEach(v => {
-    s.appendChild(el('line', { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), stroke: '#e6e1d8', 'stroke-width': 1.5 }));
-    s.appendChild(el('text', { x: m.l - 8, y: Y(v) + 5, 'text-anchor': 'end', 'font-size': 16, fill: '#3a3a42' }, v.toLocaleString('en-US')));
-  });
-  s.appendChild(el('line', { x1: m.l, x2: m.l, y1: m.t, y2: m.t + ih, stroke: '#0b0b0d', 'stroke-width': 2.2 }));
-  s.appendChild(el('line', { x1: m.l, x2: W - m.r, y1: m.t + ih, y2: m.t + ih, stroke: '#0b0b0d', 'stroke-width': 2.2 }));
-  [['Daily burn', 2363, '#0b0b0d'], ['Diet target', 2550, '#c2410c']].forEach(([name, v, c], i) => {
-    const bw = 96, x = m.l + 30 + i * (bw + 48);
-    s.appendChild(el('rect', { x, y: Y(v), width: bw, height: m.t + ih - Y(v), rx: 5, fill: c }));
-    s.appendChild(el('text', { x: x + bw / 2, y: Y(v) - 8, 'text-anchor': 'middle', 'font-size': 18, 'font-weight': 800, fill: c }, v.toLocaleString('en-US')));
-    s.appendChild(el('text', { x: x + bw / 2, y: H - 24, 'text-anchor': 'middle', 'font-size': 17, 'font-weight': 600, fill: '#0b0b0d' }, name));
-  });
-  s.appendChild(el('text', { transform: `translate(14 ${m.t + ih / 2}) rotate(-90)`, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: '#0b0b0d' }, 'kcal per day'));
-})();
-</script>
 </body>
 </html>
