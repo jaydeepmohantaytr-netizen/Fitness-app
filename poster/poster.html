@@ -7,7 +7,7 @@
   @page { size: 70cm 56cm; margin: 0; }
   :root {
     --navy: #0f1b3d; --ink: #101828; --muted: #475467; --paper: #f4f7fd; --card: #ffffff;
-    --blue: #2563eb; --orange: #ea580c; --green: #15803d; --purple: #7c3aed;
+    --blue: #2563eb; --orange: #ea580c; --green: #15803d; --gold-d: #a16207;
     --teal: #0e7490; --red: #dc2626; --gold: #f59e0b; --line: #d6deee;
   }
   * { box-sizing: border-box; }
@@ -36,9 +36,9 @@
   .head h1 { margin: 0; font-size: 100pt; line-height: 0.95; letter-spacing: 0.02em; font-weight: 900; }
   .head .sub { font-size: 25pt; color: #fcd34d; font-weight: 700; margin-top: 0.25cm; line-height: 1.2; }
   .team { background: rgba(255,255,255,.12); border: 0.07cm solid rgba(255,255,255,.35); border-radius: 0.5cm; padding: 0.5cm 0.8cm; }
-  .team .lbl { font-size: 15pt; letter-spacing: .14em; text-transform: uppercase; color: #bfdbfe; font-weight: 700; }
+  .team .lbl { font-size: 15pt; letter-spacing: .14em; text-transform: uppercase; color: #fff; font-weight: 700; }
   .team .names { font-size: 28pt; font-weight: 800; line-height: 1.2; margin: 0.1cm 0 0.15cm; }
-  .team .cls { font-size: 20pt; line-height: 1.3; color: #e0e7ff; }
+  .team .cls { font-size: 20pt; line-height: 1.3; color: #fff; }
 
   /* generic card + headings */
   .row { display: grid; column-gap: 0.55cm; min-height: 0; }
@@ -47,7 +47,7 @@
   .card { background: var(--card); border: 0.06cm solid var(--line); border-radius: 0.45cm; padding: 0.5cm 0.7cm; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
   h2 { margin: 0 0 0.35cm; align-self: flex-start; font-size: 28pt; font-weight: 900; text-transform: uppercase; letter-spacing: .03em; line-height: 1.1; padding-bottom: 0.1cm; border-bottom: 0.17cm solid currentColor; }
   .c-blue { color: var(--blue); } .c-orange { color: var(--orange); } .c-green { color: var(--green); }
-  .c-purple { color: var(--purple); } .c-teal { color: var(--teal); } .c-red { color: var(--red); }
+  .c-gold { color: var(--gold-d); } .c-navy { color: #1e3a8a; } .c-teal { color: var(--teal); } .c-red { color: var(--red); }
   ul { margin: 0; padding-left: 0.85cm; font-size: 20pt; line-height: 1.28; }
   li { margin-bottom: 0.12cm; } li::marker { color: currentColor; }
   .ink { color: var(--ink); }
@@ -55,7 +55,7 @@
   b { font-weight: 800; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 0.18cm; margin-top: auto; }
-  .chip { font-size: 16pt; font-weight: 700; padding: 0.05cm 0.32cm; border-radius: 1cm; background: #e8efff; color: #1e40af; border: 0.04cm solid #bcd0ff; }
+  .chip { font-size: 16pt; font-weight: 700; padding: 0.14cm 0.42cm; border-radius: 1cm; background: #e8efff; color: #1e40af; border: 0.04cm solid #bcd0ff; }
 
   /* stages */
   .stage { display: grid; grid-template-columns: 1.25cm 1fr; column-gap: 0.4cm; align-items: center; margin-bottom: 0.12cm; }
@@ -72,7 +72,7 @@
 
   /* stats */
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25cm; margin-bottom: 0.3cm; }
-  .stat { background: #ecfdf3; border: 0.05cm solid #b7ebcd; border-radius: 0.3cm; text-align: center; padding: 0.15cm 0; }
+  .stat { background: #ecfdf3; border: 0.05cm solid #b7ebcd; border-radius: 0.3cm; text-align: center; padding: 0.3cm 0.2cm; }
   .stat b { display: block; font-size: 30pt; color: var(--green); line-height: 1.05; }
   .stat span { font-size: 14pt; color: var(--muted); }
   .res li { font-size: 19pt; line-height: 1.22; margin-bottom: 0.14cm; }
@@ -119,7 +119,7 @@
     </div>
 
     <div class="card">
-      <h2 class="c-purple">How it works</h2>
+      <h2 class="c-gold">How it works</h2>
       <figure>
         <svg id="arch" viewBox="0 0 440 178" role="img" aria-label="Architecture diagram"></svg>
         <figcaption><b>Figure 1.</b> System architecture of Fit Verse</figcaption>
@@ -131,7 +131,7 @@
       <div class="stage"><div class="n" style="background:var(--blue)">1</div><div class="t"><b>Foundation</b>Setup, design system, login, habit tracker, admin</div></div>
       <div class="stage"><div class="n" style="background:var(--orange)">2</div><div class="t"><b>Workout</b>Fitness quiz → AI home plan → EXP</div></div>
       <div class="stage"><div class="n" style="background:var(--green)">3</div><div class="t"><b>Nutrition</b>Plain-language food log → calories &amp; macros</div></div>
-      <div class="stage"><div class="n" style="background:var(--purple)">4</div><div class="t"><b>Redesign</b>Dark “Cadence” UI + Today dashboard</div></div>
+      <div class="stage"><div class="n" style="background:var(--teal)">4</div><div class="t"><b>Redesign</b>Dark “Cadence” UI + Today dashboard</div></div>
       <div class="stage next"><div class="n">5</div><div class="t"><b>Next</b>Deeper coach tools (view/edit a member’s data)</div></div>
     </div>
   </section>
@@ -198,8 +198,8 @@
         <li><span class="ink">Personal wellness and habit building at home.</span></li></ul>
     </div>
     <div class="card">
-      <h2 class="c-purple">Limits &amp; future scope</h2>
-      <ul class="c-purple"><li><span class="ink"><b>Limits:</b> AI needs a capable laptop; macro estimates are approximate; tested on a small scale so far.</span></li>
+      <h2 class="c-navy">Limits &amp; future scope</h2>
+      <ul class="c-navy"><li><span class="ink"><b>Limits:</b> AI needs a capable laptop; macro estimates are approximate; tested on a small scale so far.</span></li>
         <li><span class="ink"><b>Next:</b> deeper coach tools, mobile app, progress history charts.</span></li></ul>
     </div>
   </section>
@@ -225,7 +225,7 @@ const el = (tag, attrs = {}, text) => { const e = document.createElementNS(NS, t
   arrow(114, 54, 146, 54);
   s.appendChild(el('text', { x: 130, y: 40, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#475467' }, 'REST'));
   s.appendChild(el('text', { x: 130, y: 74, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#475467' }, 'JWT'));
-  box(148, 8, 152, 92, '#f3e8ff', '#7c3aed', [['FastAPI', 15, 800, '#5b21b6'], ['auth · todos · planner', 12.5, 600], ['workout · nutrition', 12.5, 600], ['admin · EXP engine', 12.5, 600]]);
+  box(148, 8, 152, 92, '#e0f4f8', '#0e7490', [['FastAPI', 15, 800, '#155e75'], ['auth · todos · planner', 12.5, 600], ['workout · nutrition', 12.5, 600], ['admin · EXP engine', 12.5, 600]]);
   arrow(302, 54, 328, 54);
   box(330, 8, 110, 92, '#ecfdf3', '#15803d', [['SQLite', 15, 800, '#166534'], ['12 tables', 13, 600], ['users · EXP', 12.5, 600], ['workouts · food', 12.5, 600]]);
   arrow(224, 102, 224, 126);
