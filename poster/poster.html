@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fit Verse — Annual Exhibition 2026-27 Poster (70 × 56 cm)</title>
+<style>
+  @page { size: 70cm 56cm; margin: 0; }
+  :root {
+    --navy: #0f1b3d; --ink: #101828; --muted: #475467; --paper: #f4f7fd; --card: #ffffff;
+    --blue: #2563eb; --orange: #ea580c; --green: #15803d; --purple: #7c3aed;
+    --teal: #0e7490; --red: #dc2626; --gold: #f59e0b; --line: #d6deee;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #fff; }
+  body { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .poster {
+    position: relative; width: 70cm; height: 56cm; overflow: hidden;
+    border: 0.9cm solid var(--navy); background: var(--paper);
+    padding: 0.9cm 1cm 0.8cm;
+    display: grid; grid-template-rows: 6.6cm 11.2cm 13.2cm 12cm 7cm; row-gap: 0.55cm;
+  }
+  .poster::after {            /* inner gold boundary line */
+    content: ""; position: absolute; inset: 0.18cm; border: 0.13cm solid var(--gold); pointer-events: none; border-radius: 0.2cm;
+  }
+
+  /* header */
+  .head {
+    background: linear-gradient(110deg, #0f1b3d 0%, #1e3a8a 60%, #2563eb 100%);
+    border-radius: 0.5cm; color: #fff; display: grid; grid-template-columns: 1fr 19.5cm; align-items: center;
+    padding: 0 1.2cm; gap: 1cm;
+  }
+  .brand { display: flex; align-items: center; gap: 0.9cm; }
+  .logo { width: 3.4cm; height: 3.4cm; border-radius: 0.8cm; background: #3b6cf6; display: grid; place-items: center; box-shadow: 0 0.2cm 0.6cm rgba(0,0,0,.35); flex: none; }
+  .logo svg { width: 2.1cm; height: 2.1cm; }
+  .head h1 { margin: 0; font-size: 100pt; line-height: 0.95; letter-spacing: 0.02em; font-weight: 900; }
+  .head .sub { font-size: 25pt; color: #fcd34d; font-weight: 700; margin-top: 0.25cm; line-height: 1.2; }
+  .team { background: rgba(255,255,255,.12); border: 0.07cm solid rgba(255,255,255,.35); border-radius: 0.5cm; padding: 0.5cm 0.8cm; }
+  .team .lbl { font-size: 15pt; letter-spacing: .14em; text-transform: uppercase; color: #bfdbfe; font-weight: 700; }
+  .team .names { font-size: 28pt; font-weight: 800; line-height: 1.2; margin: 0.1cm 0 0.15cm; }
+  .team .cls { font-size: 20pt; line-height: 1.3; color: #e0e7ff; }
+
+  /* generic card + headings */
+  .row { display: grid; column-gap: 0.55cm; min-height: 0; }
+  .r3 { grid-template-columns: repeat(3, 1fr); }
+  .r4 { grid-template-columns: repeat(4, 1fr); }
+  .card { background: var(--card); border: 0.06cm solid var(--line); border-radius: 0.45cm; padding: 0.5cm 0.7cm; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+  h2 { margin: 0 0 0.35cm; align-self: flex-start; font-size: 28pt; font-weight: 900; text-transform: uppercase; letter-spacing: .03em; line-height: 1.1; padding-bottom: 0.1cm; border-bottom: 0.17cm solid currentColor; }
+  .c-blue { color: var(--blue); } .c-orange { color: var(--orange); } .c-green { color: var(--green); }
+  .c-purple { color: var(--purple); } .c-teal { color: var(--teal); } .c-red { color: var(--red); }
+  ul { margin: 0; padding-left: 0.85cm; font-size: 20pt; line-height: 1.28; }
+  li { margin-bottom: 0.12cm; } li::marker { color: currentColor; }
+  .ink { color: var(--ink); }
+  p { margin: 0 0 0.2cm; font-size: 20pt; line-height: 1.28; }
+  b { font-weight: 800; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.18cm; margin-top: auto; }
+  .chip { font-size: 16pt; font-weight: 700; padding: 0.05cm 0.32cm; border-radius: 1cm; background: #e8efff; color: #1e40af; border: 0.04cm solid #bcd0ff; }
+
+  /* stages */
+  .stage { display: grid; grid-template-columns: 1.25cm 1fr; column-gap: 0.4cm; align-items: center; margin-bottom: 0.12cm; }
+  .stage .n { width: 1.25cm; height: 1.25cm; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 20pt; }
+  .stage .t { font-size: 18pt; line-height: 1.12; } .stage .t b { display: block; font-size: 19.5pt; }
+  .stage.next .n { background: #fff !important; color: var(--muted); border: 0.1cm dashed var(--muted); }
+
+  /* screenshots */
+  .shot { display: flex; flex-direction: column; min-height: 0; }
+  .shot .img { border-radius: 0.3cm; overflow: hidden; border: 0.06cm solid var(--line); background: #0b0f1a; line-height: 0; aspect-ratio: 1.61; }
+  .shot img { width: 121.2%; margin-left: -21.2%; display: block; }  /* crop sidebar + empty bottom to enlarge the UI */
+  .shot .cap { font-size: 17pt; line-height: 1.2; margin-top: 0.2cm; color: var(--muted); }
+  .shot .cap b { color: var(--ink); font-size: 19pt; display: block; }
+
+  /* stats */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25cm; margin-bottom: 0.3cm; }
+  .stat { background: #ecfdf3; border: 0.05cm solid #b7ebcd; border-radius: 0.3cm; text-align: center; padding: 0.15cm 0; }
+  .stat b { display: block; font-size: 30pt; color: var(--green); line-height: 1.05; }
+  .stat span { font-size: 14pt; color: var(--muted); }
+  .res li { font-size: 19pt; line-height: 1.22; margin-bottom: 0.14cm; }
+
+  figure { margin: 0; display: flex; flex-direction: column; min-height: 0; flex: 1; }
+  figure svg { width: 100%; height: auto; display: block; }
+  figcaption { font-size: 16pt; color: var(--muted); line-height: 1.2; margin-top: 0.15cm; }
+  figcaption b { color: var(--ink); }
+  svg text { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; }
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <!-- ===== TITLE ===== -->
+  <header class="head">
+    <div class="brand">
+      <div class="logo"><svg viewBox="0 0 24 24" fill="#fff"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <div>
+        <h1>FIT VERSE</h1>
+        <div class="sub">AI-Powered Fitness, Habit &amp; Nutrition Tracker<br>with a Gamified EXP System</div>
+      </div>
+    </div>
+    <div class="team">
+      <div class="lbl">Annual Exhibition 2026-27 · Made by</div>
+      <div class="names">Jaydeep Mohanta<br>Aditya Rout Ray</div>
+      <div class="cls">Class 9 · Section C<br>Rabindra Vidya Niketan</div>
+    </div>
+  </header>
+
+  <!-- ===== ROW A ===== -->
+  <section class="row r3">
+    <div class="card">
+      <h2 class="c-blue">Aim &amp; Introduction</h2>
+      <ul class="ink c-blue">
+        <li><span class="ink"><b>Aim:</b> one app that tracks workouts, habits and nutrition, and keeps users motivated with game-style rewards.</span></li>
+        <li><span class="ink"><b>Problem:</b> most fitness apps split these areas, need the cloud and do not personalise.</span></li>
+        <li><span class="ink"><b>Our idea:</b> a single dashboard with a <b>local AI</b>, so personal data stays on the device.</span></li>
+      </ul>
+      <div class="chips">
+        <span class="chip">React 18</span><span class="chip">TypeScript</span><span class="chip">Tailwind</span>
+        <span class="chip">FastAPI</span><span class="chip">SQLite</span><span class="chip">JWT + bcrypt</span><span class="chip">Ollama AI</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="c-purple">How it works</h2>
+      <figure>
+        <svg id="arch" viewBox="0 0 440 178" role="img" aria-label="Architecture diagram"></svg>
+        <figcaption><b>Figure 1.</b> System architecture of Fit Verse</figcaption>
+      </figure>
+    </div>
+
+    <div class="card">
+      <h2 class="c-orange">Stages of work</h2>
+      <div class="stage"><div class="n" style="background:var(--blue)">1</div><div class="t"><b>Foundation</b>Setup, design system, login, habit tracker, admin</div></div>
+      <div class="stage"><div class="n" style="background:var(--orange)">2</div><div class="t"><b>Workout</b>Fitness quiz → AI home plan → EXP</div></div>
+      <div class="stage"><div class="n" style="background:var(--green)">3</div><div class="t"><b>Nutrition</b>Plain-language food log → calories &amp; macros</div></div>
+      <div class="stage"><div class="n" style="background:var(--purple)">4</div><div class="t"><b>Redesign</b>Dark “Cadence” UI + Today dashboard</div></div>
+      <div class="stage next"><div class="n">5</div><div class="t"><b>Next</b>Deeper coach tools (view/edit a member’s data)</div></div>
+    </div>
+  </section>
+
+  <!-- ===== ROW B : PROTOTYPE ===== -->
+  <section class="card" style="padding-bottom:0.4cm">
+    <h2 class="c-teal">Model / Prototype: the working app</h2>
+    <div class="row r4" style="flex:1">
+      <div class="shot"><div class="img"><img src="shots/today.png" alt="Today dashboard"></div>
+        <div class="cap"><b>Today dashboard</b>Level, streak, workout, habits and calories at a glance</div></div>
+      <div class="shot"><div class="img"><img src="shots/workout.png" alt="Workout plan"></div>
+        <div class="cap"><b>Workout plan</b>Quiz-based plan; finishing a day earns EXP</div></div>
+      <div class="shot"><div class="img"><img src="shots/nutrition.png" alt="Nutrition log"></div>
+        <div class="cap"><b>Nutrition log</b>Calorie ring and protein / carbs / fat bars</div></div>
+      <div class="shot"><div class="img"><img src="shots/admin.png" alt="Coach panel"></div>
+        <div class="cap"><b>Coach panel</b>Admin supervises members’ progress</div></div>
+    </div>
+  </section>
+
+  <!-- ===== ROW C : CHARTS + RESULTS ===== -->
+  <section class="row r4">
+    <div class="card">
+      <h2 class="c-blue">EXP to level up</h2>
+      <figure><svg id="lvl" viewBox="0 0 440 280" role="img" aria-label="Line chart of total EXP needed per level"></svg>
+        <figcaption><b>Graph 1.</b> Total EXP needed to reach each level: 50·n·(n+1), n = level − 1</figcaption></figure>
+    </div>
+    <div class="card">
+      <h2 class="c-orange">Streak multiplier</h2>
+      <figure><svg id="stk" viewBox="0 0 440 280" role="img" aria-label="Step chart of streak multiplier against streak days"></svg>
+        <figcaption><b>Graph 2.</b> EXP multiplier rises every 7 days of streak, capped at 5×</figcaption></figure>
+    </div>
+    <div class="card">
+      <h2 class="c-green">EXP per action</h2>
+      <figure><svg id="bars" viewBox="0 0 440 280" role="img" aria-label="Bar chart of EXP earned per action at 1x multiplier"></svg>
+        <figcaption><b>Graph 3.</b> EXP earned per action at 1× (task = 10 × priority weight)</figcaption></figure>
+    </div>
+    <div class="card">
+      <h2 class="c-red">Results</h2>
+      <div class="stats">
+        <div class="stat"><b>12</b><span>DB tables</span></div>
+        <div class="stat"><b>31</b><span>API routes</span></div>
+        <div class="stat"><b>~6.8k</b><span>lines of code</span></div>
+      </div>
+      <ul class="res c-red ink">
+        <li><span class="ink">Our test run matched the formulas: low task <b>+8</b>, medium <b>+10</b>, workout day <b>+25</b>, first meal log <b>+5</b> EXP.</span></li>
+        <li><span class="ink">Workout plan still generated with the AI switched off (rule-based fallback).</span></li>
+        <li><span class="ink">First AI plan takes about <b>60–90 s</b> on a laptop.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== ROW D ===== -->
+  <section class="row r3">
+    <div class="card">
+      <h2 class="c-green">Conclusions</h2>
+      <ul class="c-green"><li><span class="ink">One app can combine habits, workouts and nutrition.</span></li>
+        <li><span class="ink">Streaks and multipliers reward <b>consistency</b>, not one-off effort.</span></li>
+        <li><span class="ink">A local AI keeps data private and costs nothing to run.</span></li></ul>
+    </div>
+    <div class="card">
+      <h2 class="c-teal">Applications</h2>
+      <ul class="c-teal"><li><span class="ink">Students and school fitness programmes.</span></li>
+        <li><span class="ink">Coaches or gyms monitoring members (Coach panel).</span></li>
+        <li><span class="ink">Personal wellness and habit building at home.</span></li></ul>
+    </div>
+    <div class="card">
+      <h2 class="c-purple">Limits &amp; future scope</h2>
+      <ul class="c-purple"><li><span class="ink"><b>Limits:</b> AI needs a capable laptop; macro estimates are approximate; tested on a small scale so far.</span></li>
+        <li><span class="ink"><b>Next:</b> deeper coach tools, mobile app, progress history charts.</span></li></ul>
+    </div>
+  </section>
+</div>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs = {}, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; };
+
+/* ---------- Architecture diagram ---------- */
+(function () {
+  const s = document.getElementById('arch');
+  const box = (x, y, w, h, fill, stroke, lines, dash) => {
+    s.appendChild(el('rect', { x, y, width: w, height: h, rx: 9, fill, stroke, 'stroke-width': 2.4, 'stroke-dasharray': dash || '' }));
+    lines.forEach(([t, sz, wt, col], i) => s.appendChild(el('text', { x: x + w / 2, y: y + 19 + i * 18 * (sz / 14), 'text-anchor': 'middle', 'font-size': sz, 'font-weight': wt, fill: col || '#101828' }, t)));
+  };
+  const arrow = (x1, y1, x2, y2, label, lx, ly) => {
+    s.appendChild(el('defs')).innerHTML = '<marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4 0 8z" fill="#475467"/></marker>';
+    s.appendChild(el('line', { x1, y1, x2, y2, stroke: '#475467', 'stroke-width': 2.4, 'marker-end': 'url(#ah)' }));
+    if (label) s.appendChild(el('text', { x: lx, y: ly, 'text-anchor': 'middle', 'font-size': 12, fill: '#475467', 'font-weight': 700 }, label));
+  };
+  box(0, 8, 112, 92, '#e8efff', '#2563eb', [['Browser', 15, 800, '#1e40af'], ['React + TS', 13, 600], ['Tailwind', 13, 600], ['Zustand', 13, 600]]);
+  arrow(114, 54, 146, 54);
+  s.appendChild(el('text', { x: 130, y: 40, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#475467' }, 'REST'));
+  s.appendChild(el('text', { x: 130, y: 74, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#475467' }, 'JWT'));
+  box(148, 8, 152, 92, '#f3e8ff', '#7c3aed', [['FastAPI', 15, 800, '#5b21b6'], ['auth · todos · planner', 12.5, 600], ['workout · nutrition', 12.5, 600], ['admin · EXP engine', 12.5, 600]]);
+  arrow(302, 54, 328, 54);
+  box(330, 8, 110, 92, '#ecfdf3', '#15803d', [['SQLite', 15, 800, '#166534'], ['12 tables', 13, 600], ['users · EXP', 12.5, 600], ['workouts · food', 12.5, 600]]);
+  arrow(224, 102, 224, 126);
+  box(148, 128, 152, 46, '#fff7ed', '#ea580c', [['Ollama · llama3.2', 13.5, 800, '#9a3412'], ['local AI + fallback', 12.5, 600]], '6 4');
+})();
+
+/* ---------- shared chart helpers ---------- */
+function chart(id, o) {
+  const s = document.getElementById(id), W = 440, H = 280, m = { l: 66, r: 14, t: 18, b: 52 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const X = v => m.l + (v - o.x[0]) / (o.x[1] - o.x[0]) * iw;
+  const Y = v => m.t + ih - (v - o.y[0]) / (o.y[1] - o.y[0]) * ih;
+  o.yt.forEach(v => {
+    s.appendChild(el('line', { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), stroke: '#e4e9f4', 'stroke-width': 1.5 }));
+    s.appendChild(el('text', { x: m.l - 8, y: Y(v) + 5, 'text-anchor': 'end', 'font-size': 15, fill: '#344054' }, o.yf ? o.yf(v) : v));
+  });
+  o.xt.forEach(v => s.appendChild(el('text', { x: X(v), y: H - m.b + 21, 'text-anchor': 'middle', 'font-size': 15, fill: '#344054' }, v)));
+  s.appendChild(el('line', { x1: m.l, x2: m.l, y1: m.t, y2: m.t + ih, stroke: '#101828', 'stroke-width': 2.2 }));
+  s.appendChild(el('line', { x1: m.l, x2: W - m.r, y1: m.t + ih, y2: m.t + ih, stroke: '#101828', 'stroke-width': 2.2 }));
+  s.appendChild(el('text', { x: m.l + iw / 2, y: H - 6, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: '#101828' }, o.xl));
+  const yl = el('text', { transform: `translate(15 ${m.t + ih / 2}) rotate(-90)`, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: '#101828' }, o.yl);
+  s.appendChild(yl);
+  return { s, X, Y };
+}
+
+/* ---------- Graph 1: level curve ---------- */
+(function () {
+  const lv = Array.from({ length: 10 }, (_, i) => i + 1), exp = lv.map(l => 50 * (l - 1) * l);
+  const { s, X, Y } = chart('lvl', { x: [1, 10], y: [0, 4500], xt: lv, yt: [0, 1500, 3000, 4500], xl: 'Level', yl: 'Total EXP needed' });
+  const pts = lv.map((l, i) => `${X(l)},${Y(exp[i])}`).join(' ');
+  s.appendChild(el('polyline', { points: pts, fill: 'none', stroke: '#2563eb', 'stroke-width': 4, 'stroke-linejoin': 'round' }));
+  lv.forEach((l, i) => s.appendChild(el('circle', { cx: X(l), cy: Y(exp[i]), r: 5, fill: '#2563eb', stroke: '#fff', 'stroke-width': 2 })));
+  [[2, 100, 'start', 10, -14], [5, 1000, 'end', -12, -14], [10, 4500, 'end', -12, 6]].forEach(([l, v, a, dx, dy]) =>
+    s.appendChild(el('text', { x: X(l) + dx, y: Y(v) + dy, 'text-anchor': a, 'font-size': 15, 'font-weight': 800, fill: '#1e40af' }, v)));
+})();
+
+/* ---------- Graph 2: streak multiplier (step) ---------- */
+(function () {
+  const { s, X, Y } = chart('stk', { x: [0, 35], y: [0, 5.5], xt: [0, 7, 14, 21, 28, 35], yt: [1, 2, 3, 4, 5], yf: v => v + '×', xl: 'Streak (days)', yl: 'EXP multiplier' });
+  const steps = [[0, 7, 1], [7, 14, 2], [14, 21, 3], [21, 28, 4], [28, 35, 5]];
+  let d = '';
+  steps.forEach(([a, b, m], i) => { d += (i ? `L${X(a)},${Y(m)}` : `M${X(a)},${Y(m)}`) + `L${X(b)},${Y(m)}`; });
+  s.appendChild(el('path', { d, fill: 'none', stroke: '#ea580c', 'stroke-width': 4.5, 'stroke-linejoin': 'round' }));
+  steps.forEach(([a, , m]) => s.appendChild(el('circle', { cx: X(a), cy: Y(m), r: 5.5, fill: '#ea580c', stroke: '#fff', 'stroke-width': 2 })));
+  s.appendChild(el('text', { x: X(28) - 6, y: Y(5) - 10, 'text-anchor': 'end', 'font-size': 15, 'font-weight': 800, fill: '#9a3412' }, 'cap 5×'));
+})();
+
+/* ---------- Graph 3: EXP per action ---------- */
+(function () {
+  const s = document.getElementById('bars');
+  const data = [['Low task', 8, '#60a5fa'], ['Medium task', 10, '#3b82f6'], ['High task', 14, '#1d4ed8'], ['Workout day', 25, '#16a34a'], ['First meal log', 5, '#f59e0b']];
+  const l = 148, r = 24, t = 12, rowH = 46, max = 28, iw = 440 - l - r;
+  data.forEach(([name, v, c], i) => {
+    const y = t + i * rowH;
+    s.appendChild(el('text', { x: l - 10, y: y + 25, 'text-anchor': 'end', 'font-size': 15.5, fill: '#101828', 'font-weight': 600 }, name));
+    s.appendChild(el('rect', { x: l, y, width: v / max * iw, height: 34, rx: 5, fill: c }));
+    s.appendChild(el('text', { x: l + v / max * iw + 7, y: y + 25, 'font-size': 16, 'font-weight': 800, fill: '#101828' }, v));
+  });
+  const ay = t + 5 * rowH + 2;
+  s.appendChild(el('line', { x1: l, x2: l, y1: t - 4, y2: ay, stroke: '#101828', 'stroke-width': 2.2 }));
+  s.appendChild(el('line', { x1: l, x2: 440 - r, y1: ay, y2: ay, stroke: '#101828', 'stroke-width': 2.2 }));
+  s.appendChild(el('text', { x: l + iw / 2, y: 270, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: '#101828' }, 'EXP earned (at 1× multiplier)'));
+})();
+</script>
+</body>
+</html>
