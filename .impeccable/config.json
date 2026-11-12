@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-11-12T13:07:39.450Z",
+        "reason": "Assistant judgement, not user-confirmed: poster type matches the Fitverse wordmark and app UI grotesque; alternatives installed here (DejaVu, Liberation, Free*) read worse in print"
+      }
+    ]
+  }
+}
